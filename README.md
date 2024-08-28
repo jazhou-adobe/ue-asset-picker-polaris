@@ -1,4 +1,4 @@
-# 259PlumOpossum
+# Asset picker extension
 
 Welcome to my Adobe I/O Application!
 
@@ -6,6 +6,84 @@ Welcome to my Adobe I/O Application!
 
 - Populate the `.env` file in the project root and fill it as shown [below](#env)
 - Update your imsOrg and RepoId in 'OpenassetpickerModel'
+- Adding the custom data type in your AEM project
+
+```javascript
+Add field in component models.json
+
+...
+      {
+        "component": "custom-asset",
+        "name": "custom-asset",
+        "label": "Third party Asset",
+        "valueType": "string"
+      }
+...
+
+Update your block to read the delivery URL from properties.
+Since AEM will auto block attributes with http value into a button. Here creates a workaround to cheat the auto-block. It will be good that the product can have a better solution.
+
+Example of a card block I use
+
+import { createOptimizedPicture } from '../../scripts/aem.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
+
+export default function decorate(block) {
+
+  function extractStringBetween(originalString, startString, endString) {
+    // Find the position of the start string
+    var startIndex = originalString.indexOf(startString);
+    if (startIndex === -1) {
+        // Start string not found
+        return null;
+    }
+
+    // Adjust the start index to exclude the start string itself
+    startIndex += startString.length;
+
+    // Find the position of the end string, starting from the position after the start string
+    var endIndex = originalString.indexOf(endString, startIndex);
+    if (endIndex === -1) {
+        // End string not found
+        return null;
+    }
+
+    // Extract the substring between the start and end indices
+    return originalString.substring(startIndex, endIndex);
+}
+  /* change to ul, li */
+  const ul = document.createElement('ul');
+  var hasPolaris = false;
+  [...block.children].forEach((row) => {
+    const li = document.createElement('li');
+    moveInstrumentation(row, li);
+    while (row.firstElementChild) li.append(row.firstElementChild);
+    [...li.children].forEach((div) => {
+      if (div.children.length === 1 && div.querySelector('picture')) {
+        div.className = 'cards-card-image';
+      } if (div.children.length === 1 && div.innerHTML.indexOf('<p>https')>-1) {
+        div.className = 'cards-card-polaris';
+        var imageUrl = decodeURIComponent(extractStringBetween(div.innerHTML, '<p>', '</p>'))
+        div.innerHTML = '<img class="polaris" src="' + imageUrl + '">';
+        hasPolaris = true;
+      } else {
+        div.className = 'cards-card-body';
+      }
+    });
+    ul.append(li);
+  });
+  ul.querySelectorAll('img').forEach((img) => {
+    if (img.className.indexOf('polaris') > -1) return;
+    const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
+    moveInstrumentation(img, optimizedPic.querySelector('img'));
+    img.closest('picture').replaceWith(optimizedPic);
+  });
+
+  block.textContent = '';
+  block.append(ul);
+}
+
+```
 
 ## Local Dev
 
