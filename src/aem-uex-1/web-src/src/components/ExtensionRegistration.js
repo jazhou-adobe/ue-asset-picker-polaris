@@ -18,7 +18,7 @@ function ExtensionRegistration() {
               // @todo YOUR CUSTOM DATA FIELD RENDERERS DECLARATION SHOULD BE HERE
               {
                 extension: 'asset-picker-field',
-                dataType: 'custom-asset',
+                dataType: 'external-asset',
                 url: '/index.html#/open-asset-picker',
                 icon: 'OpenIn',
               },

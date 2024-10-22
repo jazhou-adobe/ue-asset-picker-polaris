@@ -19,10 +19,8 @@ function App() {
             exact path="index.html"
             element={<ExtensionRegistration />}
           />
-          <Route
-            exact path="open-asset-picker-modal"
-            element={<OpenassetpickerModal />}
-          />
+          <Route exact={true} path="open-asset-picker-modal/:fieldName" element={<OpenassetpickerModal />} />
+
           <Route
             exact path="open-asset-picker"
             element={<Openassetpicker />}
