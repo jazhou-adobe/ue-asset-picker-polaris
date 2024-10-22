@@ -13,7 +13,7 @@ function ExtensionRegistration() {
       methods: {
         canvas: {
           getRenderers() {
-            console.log('getRenderers' );
+            console.log('getRenderers for external-asset' );
             return [
               // @todo YOUR CUSTOM DATA FIELD RENDERERS DECLARATION SHOULD BE HERE
               {
